@@ -55,7 +55,7 @@ GRANT ALL PRIVILEGES ON DATABASE yourdatabase TO youruser;
 
 ### 5. Configure Django Settings
 
-Update your `.env` file with your PostgreSQL database configuration and secret key (obtain froma developer):
+Update your `.env` file with your PostgreSQL database configuration and secret key (obtain from a developer):
 
 ```bash
 DB_NAME=yourdatabase
