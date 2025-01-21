@@ -3,7 +3,7 @@ import sys
 import requests
 
 
-def fetch_pokemon_moves_and_create(auth_token, offset):
+def fetch_pokemon_and_create(auth_token, offset):
     """
     Fetch all Pokémon types from the PokeAPI and send them to the Django backend.
     """
@@ -86,4 +86,4 @@ if __name__ == "__main__":
 
     auth_token = sys.argv[1]
     offset = sys.argv[2] if len(sys.argv) == 3 else 0
-    fetch_pokemon_moves_and_create(auth_token, offset)
+    fetch_pokemon_and_create(auth_token, offset)
