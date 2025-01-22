@@ -34,6 +34,7 @@ def fetch_pokemon_and_create(auth_token, offset):
             base_experience = details["base_experience"]
             order = details["order"]
             is_default = details["is_default"]
+            uri = details["sprites"]["front_default"]
 
             # Get types
             for type in details["types"]:
@@ -59,6 +60,7 @@ def fetch_pokemon_and_create(auth_token, offset):
                 "base_experience": base_experience,
                 "order": order,
                 "is_default": is_default,
+                "uri": uri,
                 "type_keys": type_keys,
                 "ability_keys": ability_keys,
                 "move_keys": move_keys

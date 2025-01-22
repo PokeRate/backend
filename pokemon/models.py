@@ -69,6 +69,7 @@ class Pokemon(TimeStampedModel):
     base_experience = models.IntegerField()
     order = models.IntegerField()
     is_default = models.BooleanField()
+    uri = models.CharField(blank=True, null=True)
     type_keys = models.ManyToManyField(PokemonType, blank=True)
     ability_keys = models.ManyToManyField(PokemonAbility, blank=True)
     move_keys = models.ManyToManyField(PokemonMove, blank=True)
