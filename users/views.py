@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from rest_framework import permissions, status, viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action
@@ -38,6 +39,7 @@ class UserViewset(CreateModelMixin, viewsets.GenericViewSet):
     def current(self, request):
         user = request.user
         serializer = self.get_serializer(instance=user)
+        user.last_login = timezone.now()
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -52,5 +54,7 @@ class UserViewset(CreateModelMixin, viewsets.GenericViewSet):
                 {'error': 'Invalid password'}, status=status.HTTP_400_BAD_REQUEST
             )
 
+        user.last_login = timezone.now()
         token, _ = Token.objects.get_or_create(user=user)
+
         return Response({'access': token.key}, status=status.HTTP_200_OK)
