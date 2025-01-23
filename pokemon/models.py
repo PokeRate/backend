@@ -44,7 +44,7 @@ class PokemonMove(TimeStampedModel):
     accuracy = models.IntegerField(blank=True, null=True)
     pp = models.IntegerField(blank=True, null=True)
     power = models.IntegerField(blank=True, null=True)
-    type_key = models.ForeignKey(PokemonType, on_delete=models.CASCADE)
+    type = models.ForeignKey(PokemonType, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ['id']
@@ -52,10 +52,6 @@ class PokemonMove(TimeStampedModel):
     @property
     def pokemon(self):
         return self.pokemon_set.all()
-
-    @property
-    def type(self):
-        return self.type_key
 
     def __str__(self):
         return self.name
@@ -70,24 +66,12 @@ class Pokemon(TimeStampedModel):
     order = models.IntegerField()
     is_default = models.BooleanField()
     uri = models.CharField(blank=True, null=True)
-    type_keys = models.ManyToManyField(PokemonType, blank=True)
-    ability_keys = models.ManyToManyField(PokemonAbility, blank=True)
-    move_keys = models.ManyToManyField(PokemonMove, blank=True)
+    types = models.ManyToManyField(PokemonType, blank=True)
+    abilities = models.ManyToManyField(PokemonAbility, blank=True)
+    moves = models.ManyToManyField(PokemonMove, blank=True)
 
     class Meta:
         ordering = ['id']
-
-    @property
-    def types(self):
-        return self.type_keys.all()
-
-    @property
-    def abilities(self):
-        return self.ability_keys.all()
-
-    @property
-    def moves(self):
-        return self.move_keys.all()
 
     def __str__(self):
         return self.name

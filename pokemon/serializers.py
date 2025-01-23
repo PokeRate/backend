@@ -47,29 +47,40 @@ class PokemonAbilitySerializer(TimeStampedModelSerializer):
 
 
 class PokemonMoveSerializer(TimeStampedModelSerializer):
-    type_key = serializers.PrimaryKeyRelatedField(
-        queryset=PokemonType.objects.all(), write_only=True)
+    type = serializers.PrimaryKeyRelatedField(
+        queryset=PokemonType.objects.all())
 
     pokemon = PokemonListSerializer(many=True, read_only=True)
-    type = PokemonTypeListSerializer(read_only=True)
 
     class Meta:
         model = PokemonMove
         fields = '__all__'
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data['type'] = PokemonTypeListSerializer(
+            instance.type).data
+        return data
+
 
 class PokemonSerializer(TimeStampedModelSerializer):
-    type_keys = serializers.PrimaryKeyRelatedField(
-        queryset=PokemonType.objects.all(), many=True, required=False, write_only=True)
-    ability_keys = serializers.PrimaryKeyRelatedField(
-        queryset=PokemonAbility.objects.all(), many=True, required=False, write_only=True)
-    move_keys = serializers.PrimaryKeyRelatedField(
-        queryset=PokemonMove.objects.all(), many=True, required=False, write_only=True)
-
-    types = PokemonTypeListSerializer(many=True, read_only=True)
-    abilities = PokemonAbilityListSerializer(many=True, read_only=True)
-    moves = PokemonMoveListSerializer(many=True, read_only=True)
+    types = serializers.PrimaryKeyRelatedField(
+        queryset=PokemonType.objects.all(), many=True, required=False)
+    abilities = serializers.PrimaryKeyRelatedField(
+        queryset=PokemonAbility.objects.all(), many=True, required=False)
+    moves = serializers.PrimaryKeyRelatedField(
+        queryset=PokemonMove.objects.all(), many=True, required=False)
 
     class Meta:
         model = Pokemon
         fields = '__all__'
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data['types'] = PokemonTypeListSerializer(
+            instance.types.all(), many=True).data
+        data['abilities'] = PokemonAbilityListSerializer(
+            instance.abilities.all(), many=True).data
+        data['moves'] = PokemonMoveListSerializer(
+            instance.moves.all(), many=True).data
+        return data
