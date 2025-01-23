@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from comments.serializers import CommentsListSerializerWithUsername
 from common.serializers import TimeStampedModelSerializer
 
 from .models import Pokemon, PokemonAbility, PokemonMove, PokemonType
@@ -70,6 +71,9 @@ class PokemonSerializer(TimeStampedModelSerializer):
         queryset=PokemonAbility.objects.all(), many=True, required=False)
     moves = serializers.PrimaryKeyRelatedField(
         queryset=PokemonMove.objects.all(), many=True, required=False)
+
+    # hide comments on pokemon
+    comments = None
 
     class Meta:
         model = Pokemon

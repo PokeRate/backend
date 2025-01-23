@@ -4,3 +4,4 @@ django-cors-headers
 django-environ
 psycopg2
 requests
+django-filter
