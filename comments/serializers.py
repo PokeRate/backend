@@ -14,12 +14,12 @@ class CommentsSerializer(TimeStampedModelSerializer):
         exclude = ['user_likes']
 
     def to_representation(self, instance):
-        from pokemon.serializers import PokemonListSerializer
+        from pokemon.serializers import PokemonBasicListSerializer
         from users.serializers import UserListSerializer
 
         data = super().to_representation(instance)
         data['user'] = UserListSerializer(instance.user).data
-        data['pokemon'] = PokemonListSerializer(instance.pokemon).data
+        data['pokemon'] = PokemonBasicListSerializer(instance.pokemon).data
         return data
 
 

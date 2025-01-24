@@ -23,6 +23,12 @@ class PokemonMoveListSerializer(TimeStampedModelSerializer):
         fields = ['id', 'name']
 
 
+class PokemonBasicListSerializer(TimeStampedModelSerializer):
+    class Meta:
+        model = Pokemon
+        fields = ['id', 'name']
+
+
 class PokemonListSerializer(TimeStampedModelSerializer):
     likes = serializers.IntegerField(read_only=True)
 
