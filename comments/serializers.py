@@ -31,13 +31,11 @@ class CommentsSerializer(TimeStampedModelSerializer):
     from pokemon.models import Pokemon
     from users.models import User
 
-    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
-    pokemon = serializers.PrimaryKeyRelatedField(
-        queryset=Pokemon.objects.all())
+    likes = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Comments
-        fields = '__all__'
+        exclude = ['user_likes']
 
     def to_representation(self, instance):
         from pokemon.serializers import PokemonListSerializer

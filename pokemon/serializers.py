@@ -72,9 +72,6 @@ class PokemonSerializer(TimeStampedModelSerializer):
     moves = serializers.PrimaryKeyRelatedField(
         queryset=PokemonMove.objects.all(), many=True, required=False)
 
-    # hide comments on pokemon
-    comments = None
-
     class Meta:
         model = Pokemon
         fields = '__all__'
