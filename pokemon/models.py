@@ -73,5 +73,9 @@ class Pokemon(TimeStampedModel):
     class Meta:
         ordering = ['id']
 
+    @property
+    def comments(self):
+        return self.comments_set.all()
+
     def __str__(self):
         return self.name
