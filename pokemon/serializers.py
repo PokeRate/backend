@@ -1,6 +1,5 @@
 from rest_framework import serializers
 
-from comments.serializers import CommentsListSerializerWithUsername
 from common.serializers import TimeStampedModelSerializer
 
 from .models import Pokemon, PokemonAbility, PokemonMove, PokemonType

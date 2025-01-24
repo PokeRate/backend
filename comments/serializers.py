@@ -5,32 +5,8 @@ from common.serializers import TimeStampedModelSerializer
 from .models import Comments
 
 
-class CommentsListSerializerWithUsername(TimeStampedModelSerializer):
-    class Meta:
-        model = Comments
-        fields = ['id', 'comment']
-
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        data['username'] = instance.user.username
-        return data
-
-
-class CommentsListSerializerWithPokemon(TimeStampedModelSerializer):
-    class Meta:
-        model = Comments
-        fields = ['id', 'comment']
-
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        data['pokemon'] = instance.pokemon.name
-        return data
-
-
+# Used by Comments
 class CommentsSerializer(TimeStampedModelSerializer):
-    from pokemon.models import Pokemon
-    from users.models import User
-
     likes = serializers.IntegerField(read_only=True)
 
     class Meta:
@@ -44,4 +20,37 @@ class CommentsSerializer(TimeStampedModelSerializer):
         data = super().to_representation(instance)
         data['user'] = UserListSerializer(instance.user).data
         data['pokemon'] = PokemonListSerializer(instance.pokemon).data
+        return data
+
+
+# Used by Comments
+class CommentsListSerializer(TimeStampedModelSerializer):
+    class Meta:
+        model = Comments
+        fields = ['id', 'comment']
+
+
+# Used by Pokemon
+class CommentsListSerializerNoPokemon(TimeStampedModelSerializer):
+    likes = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = Comments
+        exclude = ['user_likes', 'pokemon', 'user']
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data['username'] = instance.user.username
+        return data
+
+
+# Used by User
+class CommentsListSerializerNoUser(TimeStampedModelSerializer):
+    class Meta:
+        model = Comments
+        fields = ['id']
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data['referenced_pokemon'] = instance.pokemon.name
         return data

@@ -1,8 +1,9 @@
+from django.db.models import Count
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import LimitOffsetPagination
 
-from comments.serializers import CommentsListSerializerWithUsername
+from comments.serializers import CommentsListSerializerNoPokemon
 from common.permissions import AdminWriteElseAll
 
 from .models import Pokemon, PokemonAbility, PokemonMove, PokemonType
@@ -25,11 +26,12 @@ class PokemonViewset(viewsets.ModelViewSet):
     @action(detail=True, methods=['GET'])
     def comments(self, request, pk=None):
         pokemon = Pokemon.objects.get(pk=pk)
-        comments = pokemon.comments.all()
+        comments = pokemon.comments.annotate(
+            likes_count=Count('user_likes')).order_by('-likes_count')
 
         paginator = LimitOffsetPagination()
         page = paginator.paginate_queryset(comments, request)
-        serializer = CommentsListSerializerWithUsername(page, many=True)
+        serializer = CommentsListSerializerNoPokemon(page, many=True)
 
         return paginator.get_paginated_response(serializer.data)
 
