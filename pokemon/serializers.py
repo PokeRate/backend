@@ -24,9 +24,11 @@ class PokemonMoveListSerializer(TimeStampedModelSerializer):
 
 
 class PokemonListSerializer(TimeStampedModelSerializer):
+    likes = serializers.IntegerField(read_only=True)
+
     class Meta:
         model = Pokemon
-        fields = ['id', 'name']
+        fields = ['id', 'name', 'uri', 'likes']
 
 
 class PokemonTypeSerializer(TimeStampedModelSerializer):
@@ -70,10 +72,11 @@ class PokemonSerializer(TimeStampedModelSerializer):
         queryset=PokemonAbility.objects.all(), many=True, required=False)
     moves = serializers.PrimaryKeyRelatedField(
         queryset=PokemonMove.objects.all(), many=True, required=False)
+    likes = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Pokemon
-        fields = '__all__'
+        exclude = ['user_likes']
 
     def to_representation(self, instance):
         data = super().to_representation(instance)

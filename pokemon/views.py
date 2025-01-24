@@ -1,5 +1,5 @@
 from django.db.models import Count
-from rest_framework import viewsets
+from rest_framework import permissions, viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import LimitOffsetPagination
 
@@ -15,19 +15,40 @@ from .serializers import (PokemonAbilityListSerializer,
 
 
 class PokemonViewset(viewsets.ModelViewSet):
-    queryset = Pokemon.objects.all()
-    permission_classes = [AdminWriteElseAll]
+    queryset = Pokemon.objects.annotate(like_count=Count('user_likes'))
+    ordering_fields = ['like_count']
+
+    def get_permissions(self):
+        if self.action in ['like']:
+            permission_classes = [permissions.IsAuthenticated]
+        else:
+            permission_classes = [AdminWriteElseAll]
+        return [permission() for permission in permission_classes]
 
     def get_serializer_class(self):
         if self.action == 'list':
             return PokemonListSerializer
         return PokemonSerializer
 
+    @action(detail=True, methods=['PATCH'])
+    def like(self, request, pk=None):
+        pokemon = self.get_object()
+        user = request.user
+
+        if user in pokemon.user_likes.all():
+            pokemon.user_likes.remove(user)
+        else:
+            pokemon.user_likes.add(user)
+
+        pokemon.save()
+
+        return self.retrieve(request, pk)
+
     @action(detail=True, methods=['GET'])
     def comments(self, request, pk=None):
         pokemon = Pokemon.objects.get(pk=pk)
         comments = pokemon.comments.annotate(
-            likes_count=Count('user_likes')).order_by('-likes_count')
+            like_count=Count('user_likes')).order_by('-like_count')
 
         paginator = LimitOffsetPagination()
         page = paginator.paginate_queryset(comments, request)
