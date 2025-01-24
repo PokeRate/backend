@@ -69,6 +69,7 @@ class Pokemon(TimeStampedModel):
     types = models.ManyToManyField(PokemonType, blank=True)
     abilities = models.ManyToManyField(PokemonAbility, blank=True)
     moves = models.ManyToManyField(PokemonMove, blank=True)
+    user_likes = models.ManyToManyField('users.User', blank=True)
 
     class Meta:
         ordering = ['id']
@@ -76,6 +77,10 @@ class Pokemon(TimeStampedModel):
     @property
     def comments(self):
         return self.comments_set.all()
+
+    @property
+    def likes(self):
+        return self.user_likes.count()
 
     def __str__(self):
         return self.name
