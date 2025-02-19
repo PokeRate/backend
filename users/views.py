@@ -35,11 +35,22 @@ class UserViewset(CreateModelMixin, viewsets.GenericViewSet):
         token = Token.objects.create(user=user)
         return Response({'access': token.key}, status=status.HTTP_201_CREATED)
 
-    @action(methods=['GET'], detail=False)
+
+
+
+
+    @action(methods=['GET', 'PATCH'], detail=False)
     def current(self, request):
         user = request.user
-        serializer = self.get_serializer(instance=user)
-        user.last_login = timezone.now()
+        if request.method == 'GET':
+            serializer = self.get_serializer(instance=user)
+            user.last_login = timezone.now()
+            
+        #NEW CODE
+        elif request.method == 'PATCH':
+            serializer = self.get_serializer(instance = user, data=request.data, partial=True)
+            serializer.is_valid(raise_exception = True)
+            serializer.save()
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -58,3 +69,4 @@ class UserViewset(CreateModelMixin, viewsets.GenericViewSet):
         token, _ = Token.objects.get_or_create(user=user)
 
         return Response({'access': token.key}, status=status.HTTP_200_OK)
+    
